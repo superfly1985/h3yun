@@ -1,0 +1,7 @@
+{
+  "schema": "D287764relabel",
+  "id": "e6d97162-3b23-4e5c-aba2-95d42ca52534",
+  "field": "pic",
+  "dir": "Web_Service/氚云/image/changelog",
+  "patterns": ["*.png", "*.jpg"]
+}

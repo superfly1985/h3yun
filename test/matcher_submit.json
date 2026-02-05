@@ -1,0 +1,7 @@
+{
+  "Type": "Or",
+  "Matchers": [
+    {"Type": "Item", "Name": "oldksk", "Operator": 2, "Value": "BATCH1_SUBMIT"},
+    {"Type": "Item", "Name": "oldksk", "Operator": 2, "Value": "BATCH2_SUBMIT"}
+  ]
+}

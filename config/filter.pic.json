@@ -1,0 +1,20 @@
+{
+  "schema": "D287764relabel",
+  "filter": {
+    "FromRowNum": 0,
+    "RequireCount": true,
+    "ReturnItems": ["ObjectId","Name","IP","pic"],
+    "SortByCollection": [],
+    "ToRowNum": 50,
+    "Matcher": {
+      "Type": "And",
+      "Matchers": [
+        {
+          "Type": "Equal",
+          "Left": "ObjectId",
+          "Right": "e6d97162-3b23-4e5c-aba2-95d42ca52534"
+        }
+      ]
+    }
+  }
+}

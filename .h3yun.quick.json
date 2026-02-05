@@ -1,0 +1,23 @@
+{
+  "schema": "D287764relabel",
+  "id": "",
+  "attach_field": "pic",
+  "search": {
+    "field": "",
+    "value": ""
+  },
+  "edit": {
+    "field": "",
+    "value": ""
+  },
+  "upload": {
+    "dir": "",
+    "patterns": [
+      "*.png",
+      "*.jpg"
+    ]
+  },
+  "download": {
+    "out": ""
+  }
+}
