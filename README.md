@@ -1,8 +1,10 @@
-# 氚云 (H3Yun) Python SDK
+# 氚云 (H3Yun) Python SDK v1.0.0
 
 氚云平台的 Python SDK，提供完整的 API 操作支持。
 
 > **注意：这是内部私有库，请勿上传到 PyPI 或其他公开仓库。**
+> 
+> **版本：v1.0.0（正式发布）**
 
 ## 功能特性
 
@@ -21,20 +23,20 @@
 
 ```bash
 # 通过 SSH
-pip install git+ssh://git@your-git-server.com/path/to/h3yun-sdk.git
+pip install git+ssh://git@github.com/superfly1985/h3yun.git
 
 # 通过 HTTPS
-pip install git+https://your-git-server.com/path/to/h3yun-sdk.git
+pip install git+https://github.com/superfly1985/h3yun.git
 
 # 安装指定版本
-pip install git+ssh://git@your-git-server.com/path/to/h3yun-sdk.git@v0.1.0
+pip install git+ssh://git@github.com/superfly1985/h3yun.git@v1.0.0
 ```
 
 ### 方式2：在 requirements.txt 中指定
 
 ```txt
 # requirements.txt
-git+ssh://git@your-git-server.com/path/to/h3yun-sdk.git@v0.1.0
+git+ssh://git@github.com/superfly1985/h3yun.git@v1.0.0
 ```
 
 然后执行：
@@ -45,8 +47,8 @@ pip install -r requirements.txt
 ### 方式3：本地开发安装
 
 ```bash
-git clone git@your-git-server.com:path/to/h3yun-sdk.git
-cd h3yun-sdk
+git clone git@github.com:superfly1985/h3yun.git
+cd h3yun
 pip install -e .
 ```
 
@@ -225,10 +227,10 @@ except H3YunNetworkError as e:
 
 ```bash
 # 在主项目中添加子模块
-git submodule add git@your-git-server.com:path/to/h3yun-sdk.git libs/h3yun-sdk
+git submodule add git@github.com:superfly1985/h3yun.git libs/h3yun
 
 # 安装
-pip install -e libs/h3yun-sdk
+pip install -e libs/h3yun
 ```
 
 #### 方法2：直接复制
@@ -253,7 +255,7 @@ pip install h3yun --index-url https://your-pypi-server.com/simple
 
 ```bash
 # 克隆仓库
-git clone git@your-git-server.com:path/to/h3yun-sdk.git
+git clone git@github.com:superfly1985/h3yun.git
 
 # 安装开发依赖
 pip install -e ".[dev]"

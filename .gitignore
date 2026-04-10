@@ -1,20 +1,87 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*.pyo
+*$py.class
+*.so
+
+# Distribution / packaging
 .Python
-.mypy_cache/
-.pytest_cache/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
 .coverage
+.coverage.*
+.cache
+nosetests.xml
 coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
 
 # Environments
-.venv/
-venv/
-env/
-ENV/
 .env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 *.env
+!*.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Project specific - sensitive data
+.env
+*.env
+!.env.example
+test/*.json
+config/*.json
+!config/*.example.json
+
+# Downloaded files
+download/*/
+!download/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Local test files
+tmp_*.py
+verify_*.py
+test_*.txt
