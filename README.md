@@ -1,62 +1,273 @@
-# H3yunTool 使用说明（English + 中文）
+# 氚云 (H3Yun) Python SDK
 
-## 概述
-- H3yunTool 是一个面向氚云 OpenAPI 的通用数据管理 GUI 工具，支持查询、编辑、删除以及附件上传/下载。
-- 目标：作为独立程序包复用，减少配置和操作复杂度。
+氚云平台的 Python SDK，提供完整的 API 操作支持。
 
-## 目录与配置
-- 位置：`Web_Service/氚云/H3yunTool.py`
-- 环境认证：`Web_Service/氚云/.env`（仅需 `H3YUN_ENGINE_CODE`、`H3YUN_SECRET`）
-- 应用配置：`Web_Service/氚云/h3yun.config.json`（自动加载与自动保存，示例）
+> **注意：这是内部私有库，请勿上传到 PyPI 或其他公开仓库。**
 
-```json
-{
-  "schema": "D287764relabel",
-  "id": "<BizObjectId>",
-  "attach_field": "pic",
-  "full_details": true,
-  "search": { "field": "ObjectId", "value": "<BizObjectId>" },
-  "edit": { "field": "IP", "value": "114.114.114.114" },
-  "upload": { "dir": "Web_Service/氚云/image/changelog", "patterns": ["*.png","*.jpg"] },
-  "download": { "out": "Web_Service/氚云/download/pic" }
-}
+## 功能特性
+
+- ✅ 业务数据查询（单条/批量）
+- ✅ 业务数据创建（单条/批量）
+- ✅ 业务数据更新
+- ✅ 业务数据删除
+- ✅ 附件上传/下载
+- ✅ 自动重试机制
+- ✅ 完整的类型提示
+- ✅ 自定义异常类
+
+## 安装
+
+### 方式1：通过 Git 安装（推荐）
+
+```bash
+# 通过 SSH
+pip install git+ssh://git@your-git-server.com/path/to/h3yun-sdk.git
+
+# 通过 HTTPS
+pip install git+https://your-git-server.com/path/to/h3yun-sdk.git
+
+# 安装指定版本
+pip install git+ssh://git@your-git-server.com/path/to/h3yun-sdk.git@v0.1.0
 ```
 
-## 启动
-- `python Web_Service/氚云/H3yunTool.py`
-- 自动加载 `h3yun.config.json`；界面变更自动保存（无弹窗）。
+### 方式2：在 requirements.txt 中指定
 
-## 功能
-- Load One 查询单条：输入 `Schema` 与 `BizObjectId`，显示完整字段列表
-- Load Many 批量查询：可输入查询字段与值；可勾选“Full Details 全字段”以逐条补齐字段集合
-- Update 更新：点击表格字段或表头自动填入编辑字段与值，点击“更新”提交
-- Remove 删除：按当前 `BizObjectId` 删除
-- Create 新增：弹窗列出当前表格列（排除系统字段），为每列提供输入框，提交后自动读取新记录
-- Attach 附件：设置附件字段，选择文件或目录批量上传；支持下载到输出目录
+```txt
+# requirements.txt
+git+ssh://git@your-git-server.com/path/to/h3yun-sdk.git@v0.1.0
+```
 
-## 交互优化
-- 行选择：选中行自动将 `ObjectId` 填入 `BizObjectId`
-- 字段选择：点击单元格或表头自动填入编辑字段（以及附件字段）与值
-- 滚动条：列表带水平/垂直滚动条以适配宽表与长表
+然后执行：
+```bash
+pip install -r requirements.txt
+```
 
-## 泛用性设计
-- 动态字段：不假定 IP 或 pic 为固定字段；按实际返回列动态构建显示与新增窗口
-- 可移植：仅依赖 `.env` 与 `h3yun.config.json` 两个文件；可通过 PyInstaller 等打包为独立程序
+### 方式3：本地开发安装
 
-## 打包建议
-- 进入项目根：`cd d:\OneDrive\01.project\35.Config_Search`
-- 安装依赖：`pip install -r Web_Service/氚云/requirements.txt`
-- 生成 exe（示例）：
-  - `pyinstaller -F Web_Service/氚云/H3yunTool.py -n H3yunTool`
-  - 将 `.env` 与 `h3yun.config.json` 放入与 exe 同目录即可运行
+```bash
+git clone git@your-git-server.com:path/to/h3yun-sdk.git
+cd h3yun-sdk
+pip install -e .
+```
 
-## 变更说明
-- 清理未使用方法：移除旧的 `create_one/create_many` 辅助方法，统一用“Create 新增”弹窗实现
-- 字段泛化：附件字段与优先显示列按返回结果动态生成，避免空值与不匹配
-- 配置行为：启动自动加载；关键字段变更自动持久化；快速保存保留，无成功提示弹窗
+### 方式4：复制源码使用
 
-## 常见问题
-- 为什么批量查询不返回所有字段？
-  - 批量接口按 `ReturnItems` 返回列，勾选“Full Details 全字段”后工具会逐条补齐字段集合
-- 附件字段不是固定的？
-  - 是的，附件字段由用户选择（点击列或手动输入），工具按当前设定进行上传与下载
+直接将 `src/h3yun/` 目录复制到你的项目中：
+
+```
+your-project/
+├── h3yun/              # 复制 src/h3yun/ 到这里
+│   ├── __init__.py
+│   ├── config.py
+│   ├── client.py
+│   └── exceptions.py
+└── your_code.py
+```
+
+## 快速开始
+
+### 1. 配置环境变量
+
+```bash
+export H3YUN_ENGINE_CODE="your_engine_code"
+export H3YUN_SECRET="your_secret"
+export H3YUN_BASE_URL="https://www.h3yun.com"  # 可选，默认
+export H3YUN_TIMEOUT="30"  # 可选，默认30秒
+```
+
+### 2. 基础用法
+
+```python
+from h3yun import H3YunConfig, H3YunClient
+
+# 从环境变量读取配置
+config = H3YunConfig.from_env()
+client = H3YunClient(config)
+
+# 查询单条数据
+result = client.load_biz_object("SchemaCode", "BizObjectId")
+
+# 创建数据
+new_data = {"Name": "张三", "Age": 25}
+result = client.create_biz_object("SchemaCode", new_data)
+
+# 更新数据
+update_data = {"Status": "已完成"}
+result = client.update_biz_object("SchemaCode", "BizObjectId", update_data)
+
+# 删除数据
+result = client.remove_biz_object("SchemaCode", "BizObjectId")
+
+# 上传附件
+result = client.upload_attachment(
+    "SchemaCode",
+    "BizObjectId",
+    "FilePropertyName",
+    "/path/to/file.png"
+)
+
+# 下载附件
+result = client.download_attachment("AttachmentId", out_dir="./downloads")
+```
+
+### 3. 批量操作
+
+```python
+# 批量创建（自动分批处理）
+items = [
+    {"Name": "张三", "Age": 25},
+    {"Name": "李四", "Age": 30},
+    # ... 更多数据
+]
+results = client.create_biz_objects("SchemaCode", items, batch_size=100)
+
+# 批量查询
+params = {
+    "ToRowNum": 100,
+    "Filter": '{"Type":"And","Matchers":[]}'
+}
+result = client.load_biz_objects("SchemaCode", params)
+```
+
+## 配置说明
+
+### 环境变量
+
+| 变量名 | 必填 | 说明 |
+|--------|------|------|
+| `H3YUN_ENGINE_CODE` | 是 | 引擎编码 |
+| `H3YUN_SECRET` | 是 | 引擎密钥 |
+| `H3YUN_BASE_URL` | 否 | API基础URL，默认 `https://www.h3yun.com` |
+| `H3YUN_TIMEOUT` | 否 | 请求超时时间（秒），默认30 |
+
+### 代码配置
+
+```python
+from h3yun import H3YunConfig, H3YunClient
+
+# 直接配置
+config = H3YunConfig(
+    engine_code="your_code",
+    secret="your_secret",
+    base_url="https://www.h3yun.com",
+    timeout=30
+)
+client = H3YunClient(config)
+
+# 从字典配置
+config = H3YunConfig.from_dict({
+    "engine_code": "your_code",
+    "secret": "your_secret"
+})
+```
+
+## 异常处理
+
+```python
+from h3yun import (
+    H3YunClient,
+    H3YunConfig,
+    H3YunAuthError,
+    H3YunAPIError,
+    H3YunNotFoundError,
+    H3YunNetworkError,
+)
+
+config = H3YunConfig.from_env()
+client = H3YunClient(config)
+
+try:
+    result = client.load_biz_object("SchemaCode", "BizObjectId")
+except H3YunAuthError as e:
+    print(f"认证失败: {e}")
+except H3YunNotFoundError as e:
+    print(f"记录不存在: {e}")
+except H3YunAPIError as e:
+    print(f"API错误: {e}")
+except H3YunNetworkError as e:
+    print(f"网络错误: {e}")
+```
+
+## 示例代码
+
+详见 [examples/](examples/) 目录：
+
+- `load_biz_object.py` - 查询单条数据
+- `load_biz_objects.py` - 批量查询数据
+- `create_biz_object.py` - 创建单条数据
+- `create_biz_objects.py` - 批量创建数据
+- `update_biz_object.py` - 更新数据
+- `remove_biz_object.py` - 删除数据
+- `upload_attachment.py` - 上传附件
+- `download_attachment.py` - 下载附件
+
+## 项目结构
+
+```
+01.氚云读写方法/
+├── src/h3yun/          # SDK核心代码
+│   ├── __init__.py     # 包入口
+│   ├── config.py       # 配置管理
+│   ├── client.py       # API客户端
+│   └── exceptions.py   # 自定义异常
+├── examples/           # 使用示例
+├── tests/              # 测试文件
+├── config/             # 配置文件示例
+├── document/           # 文档
+└── download/           # 下载文件目录
+```
+
+## 内部使用说明
+
+### 在其他项目中使用
+
+#### 方法1：Git 子模块（推荐）
+
+```bash
+# 在主项目中添加子模块
+git submodule add git@your-git-server.com:path/to/h3yun-sdk.git libs/h3yun-sdk
+
+# 安装
+pip install -e libs/h3yun-sdk
+```
+
+#### 方法2：直接复制
+
+将 `src/h3yun/` 复制到目标项目的任意位置，然后：
+
+```python
+import sys
+sys.path.insert(0, "/path/to/h3yun")
+from h3yun import H3YunConfig, H3YunClient
+```
+
+#### 方法3：私有 PyPI（如有）
+
+如果有内部 PyPI 服务器：
+
+```bash
+pip install h3yun --index-url https://your-pypi-server.com/simple
+```
+
+## 开发
+
+```bash
+# 克隆仓库
+git clone git@your-git-server.com:path/to/h3yun-sdk.git
+
+# 安装开发依赖
+pip install -e ".[dev]"
+
+# 运行测试
+pytest
+```
+
+## 版本历史
+
+详见 [changelog.md](changelog.md)
+
+## 注意事项
+
+- **请勿将此库上传到公开仓库（GitHub/PyPI 等）**
+- 包含公司敏感信息（EngineCode/Secret）的配置请妥善保管
+- 建议定期更新依赖包版本

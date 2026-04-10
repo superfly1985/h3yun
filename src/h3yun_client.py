@@ -147,7 +147,7 @@ class H3YunClient:
         if not fname:
             fname = attachment_id + ".bin"
         import os
-        d = out_dir or os.path.join(os.getcwd(), "Web_Service", "氚云", "download")
+        d = out_dir or os.path.join(os.getcwd(), "download")
         os.makedirs(d, exist_ok=True)
         pth = os.path.join(d, fname)
         with open(pth, "wb") as f:

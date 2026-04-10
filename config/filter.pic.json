@@ -10,9 +10,10 @@
       "Type": "And",
       "Matchers": [
         {
-          "Type": "Equal",
-          "Left": "ObjectId",
-          "Right": "e6d97162-3b23-4e5c-aba2-95d42ca52534"
+          "Type": "Item",
+          "Name": "ObjectId",
+          "Operator": 2,
+          "Value": "e6d97162-3b23-4e5c-aba2-95d42ca52534"
         }
       ]
     }
