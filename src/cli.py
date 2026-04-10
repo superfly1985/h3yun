@@ -103,8 +103,8 @@ def main():
         from pathlib import Path as _P
         _cands = [
             _P('.env'),
-            _P('Web_Service/氚云/.env'),
-            _P('Web_Service/氚云/test/h3yun.env'),
+            _P('test/.env'),
+            _P('test/h3yun.env'),
         ]
         for _p in _cands:
             if _p.exists():
