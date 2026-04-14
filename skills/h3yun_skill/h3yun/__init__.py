@@ -11,7 +11,7 @@
 
 基本用法:
     >>> from h3yun import H3YunConfig, H3YunClient
-    >>> config = H3YunConfig.from_env()  # 从环境变量读取配置
+    >>> config = H3YunConfig.from_env()
     >>> client = H3YunClient(config)
     >>> result = client.load_biz_object("SchemaCode", "BizObjectId")
 """

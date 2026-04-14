@@ -1,0 +1,205 @@
+{
+  "name": "氚云数据操作",
+  "description": "读写氚云 (H3Yun) 平台的业务数据，支持增删改查、附件上传下载",
+  "version": "1.0.0",
+  "author": "Your Company",
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "engine_code": {
+        "type": "string",
+        "description": "氚云应用的 EngineCode（如未提供则从环境变量 H3YUN_ENGINE_CODE 读取）"
+      },
+      "secret": {
+        "type": "string",
+        "description": "氚云应用的 Secret（如未提供则从环境变量 H3YUN_SECRET 读取）"
+      },
+      "base_url": {
+        "type": "string",
+        "default": "https://www.h3yun.com",
+        "description": "氚云平台地址（默认：https://www.h3yun.com）"
+      },
+      "timeout": {
+        "type": "integer",
+        "default": 30,
+        "description": "请求超时时间（秒，默认：30）"
+      }
+    },
+    "required": []
+  },
+  "skills": [
+    {
+      "name": "查询单条业务数据",
+      "description": "根据 SchemaCode 和 BizObjectId 查询单条业务数据",
+      "parameters": [
+        {
+          "name": "schema_code",
+          "type": "string",
+          "required": true,
+          "description": "表单编码 (SchemaCode)"
+        },
+        {
+          "name": "biz_object_id",
+          "type": "string",
+          "required": true,
+          "description": "业务对象ID (BizObjectId)"
+        }
+      ]
+    },
+    {
+      "name": "批量查询业务数据",
+      "description": "根据条件批量查询业务数据",
+      "parameters": [
+        {
+          "name": "schema_code",
+          "type": "string",
+          "required": true,
+          "description": "表单编码 (SchemaCode)"
+        },
+        {
+          "name": "filter_field",
+          "type": "string",
+          "required": false,
+          "description": "过滤字段名"
+        },
+        {
+          "name": "filter_value",
+          "type": "string",
+          "required": false,
+          "description": "过滤字段值"
+        },
+        {
+          "name": "page_index",
+          "type": "integer",
+          "required": false,
+          "default": 1,
+          "description": "页码"
+        },
+        {
+          "name": "page_size",
+          "type": "integer",
+          "required": false,
+          "default": 20,
+          "description": "每页数量"
+        }
+      ]
+    },
+    {
+      "name": "创建单条业务数据",
+      "description": "创建单条业务数据",
+      "parameters": [
+        {
+          "name": "schema_code",
+          "type": "string",
+          "required": true,
+          "description": "表单编码 (SchemaCode)"
+        },
+        {
+          "name": "data",
+          "type": "object",
+          "required": true,
+          "description": "业务数据 (JSON格式，键为字段名)"
+        }
+      ]
+    },
+    {
+      "name": "更新业务数据",
+      "description": "更新业务数据",
+      "parameters": [
+        {
+          "name": "schema_code",
+          "type": "string",
+          "required": true,
+          "description": "表单编码 (SchemaCode)"
+        },
+        {
+          "name": "biz_object_id",
+          "type": "string",
+          "required": true,
+          "description": "业务对象ID (BizObjectId)"
+        },
+        {
+          "name": "data",
+          "type": "object",
+          "required": true,
+          "description": "更新数据 (JSON格式，键为字段名)"
+        }
+      ]
+    },
+    {
+      "name": "删除业务数据",
+      "description": "删除业务数据",
+      "parameters": [
+        {
+          "name": "schema_code",
+          "type": "string",
+          "required": true,
+          "description": "表单编码 (SchemaCode)"
+        },
+        {
+          "name": "biz_object_id",
+          "type": "string",
+          "required": true,
+          "description": "业务对象ID (BizObjectId)"
+        }
+      ]
+    },
+    {
+      "name": "上传附件",
+      "description": "上传附件到氚云",
+      "parameters": [
+        {
+          "name": "schema_code",
+          "type": "string",
+          "required": true,
+          "description": "表单编码 (SchemaCode)"
+        },
+        {
+          "name": "biz_object_id",
+          "type": "string",
+          "required": true,
+          "description": "业务对象ID (BizObjectId)"
+        },
+        {
+          "name": "field_name",
+          "type": "string",
+          "required": true,
+          "description": "附件字段名称"
+        },
+        {
+          "name": "file_path",
+          "type": "string",
+          "required": true,
+          "description": "本地文件路径"
+        }
+      ]
+    },
+    {
+      "name": "下载附件",
+      "description": "从氚云下载附件",
+      "parameters": [
+        {
+          "name": "attachment_url",
+          "type": "string",
+          "required": true,
+          "description": "附件下载链接"
+        },
+        {
+          "name": "output_path",
+          "type": "string",
+          "required": false,
+          "description": "保存路径（可选）"
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "required": [],
+    "optional": [
+      "H3YUN_ENGINE_CODE",
+      "H3YUN_SECRET",
+      "H3YUN_BASE_URL",
+      "H3YUN_TIMEOUT"
+    ]
+  }
+}
