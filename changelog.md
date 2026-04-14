@@ -1,3 +1,33 @@
+## v1.1.0（发布日期：2026-04-14）
+
+### ✨ 新增功能：OpenClaw Skill 支持
+
+新增 OpenClaw Skill 模块，可直接在 OpenClaw 中作为技能使用。
+
+### 主要特性
+- ✅ 新增 `skills/h3yun_skill/` - 完整的 OpenClaw Skill
+- ✅ Skill 支持 OpenClaw 配置 + 环境变量双重配置
+- ✅ 完全独立的 Skill 文件夹，可直接分发
+- ✅ 7个可用功能（增删改查+附件）
+- ✅ 完整的 manifest.json 配置文件
+- ✅ 无硬编码敏感信息，运行时由用户配置
+
+### Skill 结构
+```
+h3yun_skill/
+├── h3yun/              # SDK核心代码
+│   ├── __init__.py
+│   ├── client.py
+│   ├── config.py
+│   └── exceptions.py
+├── skill.py            # Skill入口
+├── manifest.json     # Skill配置
+├── requirements.txt   # 依赖
+└── README.md        # 使用说明
+```
+
+---
+
 ## v1.0.0（发布日期：2026-04-10）
 
 ### 🎉 正式发布
