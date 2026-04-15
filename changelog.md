@@ -1,3 +1,62 @@
+## v1.1.2（发布日期：2026-04-16）
+
+### 🐛 Bug 修复：Skill 歧义与不一致
+
+修复 OpenClaw Skill 中多处可能导致用户误用的歧义描述和接口不一致问题。
+
+### 修复内容
+- 🐛 **manifest.json 批量查询参数与 skill.py 不一致**（P0 严重）
+  - 修复前：manifest 使用 `page_index`/`page_size`（页码/每页数量），代码实际使用 `from_row_num`/`to_row_num`（行号）
+  - 修复后：manifest 参数与代码对齐，使用 `from_row_num`/`to_row_num`，并补充说明分页规则
+- 🐛 **下载附件参数名误导**（P0 严重）
+  - 修复前：参数名 `attachment_url` 暗示传 URL 链接，实际需要附件ID
+  - 修复后：参数名改为 `attachment_id`，描述明确标注"不是URL，是附件的唯一标识ID"
+- 🐛 **README 示例与代码不一致**（P1 重要）
+  - 修复前：示例使用 `page_index`/`page_size`、中文字段名
+  - 修复后：示例使用 `from_row_num`/`to_row_num`、字段编码（如 `F0000002`）
+- 🐛 **字段名说明缺失**（P1 重要）
+  - 修复前：未说明 API 使用字段编码而非字段标题
+  - 修复后：新增"字段编码 vs 字段标题"章节，提供获取字段编码的方法
+- 🐛 **manifest.json 版本号过时**（P2）
+  - 修复前：`version: "1.0.0"`
+  - 修复后：`version: "1.1.2"`
+- 🐛 **创建数据无法选择是否提交**（P2）
+  - 修复前：`创建单条业务数据` 无 `is_submit` 参数，默认直接提交
+  - 修复后：新增 `is_submit` 参数，默认 `True`（提交），可设为 `False`（保存草稿）
+- 🐛 **上传附件 field_name 描述不清**（P2）
+  - 修复前：描述为"附件字段名称"
+  - 修复后：描述为"附件字段的字段编码（如 F0000011），不是字段标题"
+- 🐛 **过滤条件只支持等值查询**（P3）
+  - 修复前：硬编码 `Operator: 2`（等于），无法做其他比较
+  - 修复后：新增 `filter_operator` 参数，支持 0-7 共8种运算符
+
+## v1.1.1（发布日期：2026-04-14）
+
+### 🐛 Bug 修复：与官方 API 一致性
+
+修复 SDK 与氚云官方 API 文档不一致的问题。
+
+### 修复内容
+- 🐛 **LoadBizObjects Filter 结构错误**（P0 严重）
+  - 修复前：Filter 参数需用户自行拼 JSON，且缺少 `FromRowNum`、`ToRowNum`、`RequireCount`、`ReturnItems`、`SortByCollection` 等必要字段
+  - 修复后：新增 `build_filter()` 静态方法，按官方规范构建完整 Filter 结构
+  - 修复后：`load_biz_objects()` 方法支持 `from_row_num`、`to_row_num`、`matcher`、`return_items` 参数，自动构建 Filter
+  - 修复后：Matcher 结构使用官方规范的 `Matchers` 字段（原 `ChildItems` 已修正）
+  - 官方文档：https://help.h3yun.com/contents/1007/1633.html
+- 🐛 **DownloadBizObjectFile Content-Type 缺失**（P3）
+  - 修复前：下载附件请求未显式设置 Content-Type
+  - 修复后：显式设置 `Content-Type: application/x-www-form-urlencoded`
+  - 官方文档：https://help.h3yun.com/contents/1013/1639.html
+- 📝 **README 批量查询示例错误**
+  - 修复前：示例中 Filter 结构不完整，缺少必要字段
+  - 修复后：更新为使用 `build_filter()` 和 `load_biz_objects()` 新 API
+
+### API 变更
+- `load_biz_objects(schema_code, params)` → `load_biz_objects(schema_code, filter_str=None, from_row_num=0, to_row_num=500, matcher=None, return_items=None)`
+- 新增 `H3YunClient.build_filter()` 静态方法
+
+---
+
 ## v1.1.0（发布日期：2026-04-14）
 
 ### ✨ 新增功能：OpenClaw Skill 支持

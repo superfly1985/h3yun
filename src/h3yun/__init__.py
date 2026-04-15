@@ -16,7 +16,7 @@
     >>> result = client.load_biz_object("SchemaCode", "BizObjectId")
 """
 
-__version__ = "1.1.0"
+__version__ = "1.1.2"
 __author__ = "H3Yun SDK"
 
 from .config import H3YunConfig

@@ -1,10 +1,10 @@
-# 氚云 (H3Yun) Python SDK v1.1.0
+# 氚云 (H3Yun) Python SDK v1.1.2
 
 氚云平台的 Python SDK，提供完整的 API 操作支持。
 
 > **注意：这是内部私有库，请勿上传到 PyPI 或其他公开仓库。**
-> 
-> **版本：v1.1.0（新增 OpenClaw Skill 支持）**
+>
+> **版本：v1.1.2（修复 Skill 歧义与不一致）**
 
 ## 功能特性
 
@@ -36,10 +36,11 @@ pip install git+ssh://git@github.com/superfly1985/h3yun.git@v1.0.0
 
 ```txt
 # requirements.txt
-git+ssh://git@github.com/superfly1985/h3yun.git@v1.1.0
+git+ssh://git@github.com/superfly1985/h3yun.git@v1.1.2
 ```
 
 然后执行：
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -123,24 +124,49 @@ items = [
 ]
 results = client.create_biz_objects("SchemaCode", items, batch_size=100)
 
-# 批量查询
-params = {
-    "ToRowNum": 100,
-    "Filter": '{"Type":"And","Matchers":[]}'
-}
-result = client.load_biz_objects("SchemaCode", params)
+# 批量查询（无条件，默认前500条）
+result = client.load_biz_objects("SchemaCode")
+
+# 批量查询（带条件）
+result = client.load_biz_objects(
+    "SchemaCode",
+    to_row_num=100,
+    matcher={
+        "Type": "And",
+        "Matchers": [
+            {"Type": "Item", "Name": "F0000002", "Operator": 2, "Value": "123"}
+        ]
+    }
+)
+
+# 批量查询（使用 build_filter 构建复杂条件）
+filter_str = H3YunClient.build_filter(
+    from_row_num=0,
+    to_row_num=500,
+    matcher={
+        "Type": "And",
+        "Matchers": [
+            {"Type": "Item", "Name": "F0000002", "Operator": 2, "Value": "123"},
+            {"Type": "Or", "Matchers": [
+                {"Type": "Item", "Name": "Status", "Operator": 2, "Value": "已完成"}
+            ]}
+        ]
+    },
+    require_count=True,
+)
+result = client.load_biz_objects("SchemaCode", filter_str=filter_str)
 ```
 
 ## 配置说明
 
 ### 环境变量
 
-| 变量名 | 必填 | 说明 |
-|--------|------|------|
-| `H3YUN_ENGINE_CODE` | 是 | 引擎编码 |
-| `H3YUN_SECRET` | 是 | 引擎密钥 |
-| `H3YUN_BASE_URL` | 否 | API基础URL，默认 `https://www.h3yun.com` |
-| `H3YUN_TIMEOUT` | 否 | 请求超时时间（秒），默认30 |
+| 变量名                | 必填 | 说明                                       |
+| --------------------- | ---- | ------------------------------------------ |
+| `H3YUN_ENGINE_CODE` | 是   | 引擎编码                                   |
+| `H3YUN_SECRET`      | 是   | 引擎密钥                                   |
+| `H3YUN_BASE_URL`    | 否   | API基础URL，默认 `https://www.h3yun.com` |
+| `H3YUN_TIMEOUT`     | 否   | 请求超时时间（秒），默认30                 |
 
 ### 代码配置
 
