@@ -157,25 +157,115 @@ class H3YunClient:
 
         return result
 
+    @staticmethod
+    def build_filter(
+        from_row_num: int = 0,
+        to_row_num: int = 500,
+        matcher: Optional[Dict[str, Any]] = None,
+        return_items: Optional[List[str]] = None,
+        sort_by_collection: Optional[List[Dict[str, Any]]] = None,
+        require_count: bool = False,
+    ) -> str:
+        """
+        构建 LoadBizObjects 的 Filter 参数（符合官方规范）
+
+        官方文档: https://help.h3yun.com/contents/1007/1633.html
+
+        Args:
+            from_row_num: 分页起始行，默认0
+            to_row_num: 分页结束行，默认500（最大500）
+            matcher: 查询条件，结构为 {"Type": "And", "Matchers": [...]}
+                     单条件: {"Type": "Item", "Name": "字段名", "Operator": 2, "Value": "值"}
+                     组合条件: {"Type": "And/Or", "Matchers": [子条件...]}
+            return_items: 返回字段列表，不填返回所有字段
+            sort_by_collection: 排序字段（官方暂不支持，默认置空）
+            require_count: 是否查询总行数，默认False
+
+        Returns:
+            Filter JSON 字符串
+
+        Example:
+            >>> # 无条件查询前500条
+            >>> f = H3YunClient.build_filter()
+            >>> # 带条件查询
+            >>> f = H3YunClient.build_filter(
+            ...     to_row_num=100,
+            ...     matcher={
+            ...         "Type": "And",
+            ...         "Matchers": [
+            ...             {"Type": "Item", "Name": "F0000002", "Operator": 2, "Value": "123"}
+            ...         ]
+            ...     }
+            ... )
+        """
+        filter_dict: Dict[str, Any] = {
+            "FromRowNum": from_row_num,
+            "ToRowNum": to_row_num,
+            "RequireCount": require_count,
+            "ReturnItems": return_items or [],
+            "SortByCollection": sort_by_collection or [],
+            "Matcher": matcher or {"Type": "And", "Matchers": []},
+        }
+        return json.dumps(filter_dict, ensure_ascii=False)
+
     def load_biz_objects(
         self,
         schema_code: str,
-        params: Optional[Dict[str, Any]] = None,
+        filter_str: Optional[str] = None,
+        from_row_num: int = 0,
+        to_row_num: int = 500,
+        matcher: Optional[Dict[str, Any]] = None,
+        return_items: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         批量查询业务数据
 
+        官方文档: https://help.h3yun.com/contents/1007/1633.html
+        最大一次性加载500条数据。
+
         Args:
             schema_code: 表单编码
-            params: 查询参数，包括 Filter、SortByCollection 等
+            filter_str: 完整的 Filter JSON 字符串（优先级最高，传入后忽略其他参数）
+            from_row_num: 分页起始行，默认0
+            to_row_num: 分页结束行，默认500
+            matcher: 查询条件，结构为 {"Type": "And", "Matchers": [...]}
+                     Operator: 0=大于, 1=大于等于, 2=等于, 3=小于等于, 4=小于, 5=不等于, 6=在范围内, 7=不在范围内
+            return_items: 返回字段列表，不填返回所有字段
 
         Returns:
             API 响应数据
+
+        Example:
+            >>> # 无条件查询前500条
+            >>> result = client.load_biz_objects("SchemaCode")
+            >>> # 带条件查询
+            >>> result = client.load_biz_objects(
+            ...     "SchemaCode",
+            ...     to_row_num=100,
+            ...     matcher={
+            ...         "Type": "And",
+            ...         "Matchers": [
+            ...             {"Type": "Item", "Name": "F0000002", "Operator": 2, "Value": "123"}
+            ...         ]
+            ...     }
+            ... )
+            >>> # 使用完整 Filter 字符串
+            >>> result = client.load_biz_objects(
+            ...     "SchemaCode",
+            ...     filter_str=H3YunClient.build_filter(to_row_num=100)
+            ... )
         """
-        request_params = {"SchemaCode": schema_code}
-        if params:
-            request_params.update(params)
-        return self.invoke("LoadBizObjects", request_params)
+        if filter_str is None:
+            filter_str = self.build_filter(
+                from_row_num=from_row_num,
+                to_row_num=to_row_num,
+                matcher=matcher,
+                return_items=return_items,
+            )
+        return self.invoke("LoadBizObjects", {
+            "SchemaCode": schema_code,
+            "Filter": filter_str,
+        })
 
     def create_biz_object(
         self,
@@ -378,7 +468,11 @@ class H3YunClient:
         """
         url = f"{self.cfg.base_url.rstrip('/')}/Api/DownloadBizObjectFile"
         data = {"attachmentId": attachment_id, "EngineCode": self.cfg.engine_code}
-        headers = {"EngineCode": self.cfg.engine_code, "EngineSecret": self.cfg.secret}
+        headers = {
+            "EngineCode": self.cfg.engine_code,
+            "EngineSecret": self.cfg.secret,
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
 
         logger.debug(f"Downloading attachment: {attachment_id}")
 

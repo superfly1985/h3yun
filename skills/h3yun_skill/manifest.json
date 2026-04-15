@@ -1,7 +1,7 @@
 {
   "name": "氚云数据操作",
   "description": "读写氚云 (H3Yun) 平台的业务数据，支持增删改查、附件上传下载",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "author": "Your Company",
   "config_schema": {
     "type": "object",
@@ -30,25 +30,25 @@
   "skills": [
     {
       "name": "查询单条业务数据",
-      "description": "根据 SchemaCode 和 BizObjectId 查询单条业务数据",
+      "description": "根据表单编码和业务对象ID查询单条业务数据",
       "parameters": [
         {
           "name": "schema_code",
           "type": "string",
           "required": true,
-          "description": "表单编码 (SchemaCode)"
+          "description": "表单编码 (SchemaCode)，如 D28776428eaf3e1786c45e080e51e65573b69be"
         },
         {
           "name": "biz_object_id",
           "type": "string",
           "required": true,
-          "description": "业务对象ID (BizObjectId)"
+          "description": "业务对象ID (ObjectId)，如 09a980d8-3b80-4f08-bbbd-732e0afa40de"
         }
       ]
     },
     {
       "name": "批量查询业务数据",
-      "description": "根据条件批量查询业务数据",
+      "description": "批量查询业务数据，支持按字段条件过滤。默认返回前500条，最大500条。",
       "parameters": [
         {
           "name": "schema_code",
@@ -60,33 +60,40 @@
           "name": "filter_field",
           "type": "string",
           "required": false,
-          "description": "过滤字段名"
+          "description": "过滤字段编码（如 F0000002），不是字段标题。可通过先查询一条数据获取字段编码。"
         },
         {
           "name": "filter_value",
           "type": "string",
           "required": false,
-          "description": "过滤字段值"
+          "description": "过滤字段的值"
         },
         {
-          "name": "page_index",
+          "name": "filter_operator",
           "type": "integer",
           "required": false,
-          "default": 1,
-          "description": "页码"
+          "default": 2,
+          "description": "过滤运算符：0=大于, 1=大于等于, 2=等于(默认), 3=小于等于, 4=小于, 5=不等于, 6=在范围内, 7=不在范围内"
         },
         {
-          "name": "page_size",
+          "name": "from_row_num",
           "type": "integer",
           "required": false,
-          "default": 20,
-          "description": "每页数量"
+          "default": 0,
+          "description": "分页起始行号（从0开始）"
+        },
+        {
+          "name": "to_row_num",
+          "type": "integer",
+          "required": false,
+          "default": 500,
+          "description": "分页结束行号（最大500）"
         }
       ]
     },
     {
       "name": "创建单条业务数据",
-      "description": "创建单条业务数据",
+      "description": "创建单条业务数据，可选择是否直接提交",
       "parameters": [
         {
           "name": "schema_code",
@@ -98,13 +105,20 @@
           "name": "data",
           "type": "object",
           "required": true,
-          "description": "业务数据 (JSON格式，键为字段名)"
+          "description": "业务数据，键为字段编码（如 F0000002），不是字段标题。可通过先查询一条数据获取字段编码。"
+        },
+        {
+          "name": "is_submit",
+          "type": "boolean",
+          "required": false,
+          "default": true,
+          "description": "是否直接提交。true=提交(默认)，false=仅保存草稿"
         }
       ]
     },
     {
       "name": "更新业务数据",
-      "description": "更新业务数据",
+      "description": "更新指定ID的业务数据",
       "parameters": [
         {
           "name": "schema_code",
@@ -116,19 +130,19 @@
           "name": "biz_object_id",
           "type": "string",
           "required": true,
-          "description": "业务对象ID (BizObjectId)"
+          "description": "业务对象ID (ObjectId)"
         },
         {
           "name": "data",
           "type": "object",
           "required": true,
-          "description": "更新数据 (JSON格式，键为字段名)"
+          "description": "更新数据，键为字段编码（如 F0000002），只需传需要更新的字段。"
         }
       ]
     },
     {
       "name": "删除业务数据",
-      "description": "删除业务数据",
+      "description": "删除指定ID的业务数据（不可恢复）",
       "parameters": [
         {
           "name": "schema_code",
@@ -140,13 +154,13 @@
           "name": "biz_object_id",
           "type": "string",
           "required": true,
-          "description": "业务对象ID (BizObjectId)"
+          "description": "业务对象ID (ObjectId)"
         }
       ]
     },
     {
       "name": "上传附件",
-      "description": "上传附件到氚云",
+      "description": "上传本地文件到氚云表单的附件字段",
       "parameters": [
         {
           "name": "schema_code",
@@ -158,37 +172,37 @@
           "name": "biz_object_id",
           "type": "string",
           "required": true,
-          "description": "业务对象ID (BizObjectId)"
+          "description": "业务对象ID (ObjectId)"
         },
         {
           "name": "field_name",
           "type": "string",
           "required": true,
-          "description": "附件字段名称"
+          "description": "附件字段的字段编码（如 F0000011），不是字段标题。在表单设计器中可查看。"
         },
         {
           "name": "file_path",
           "type": "string",
           "required": true,
-          "description": "本地文件路径"
+          "description": "本地文件的完整路径，如 D:\\\\docs\\\\test.pdf"
         }
       ]
     },
     {
       "name": "下载附件",
-      "description": "从氚云下载附件",
+      "description": "根据附件ID从氚云下载附件到本地",
       "parameters": [
         {
-          "name": "attachment_url",
+          "name": "attachment_id",
           "type": "string",
           "required": true,
-          "description": "附件下载链接"
+          "description": "附件ID (AttachmentId)，如 fa5a96d4-559c-46c0-9dcc-dcb6e427a94c。注意：不是URL，是附件的唯一标识ID。"
         },
         {
           "name": "output_path",
           "type": "string",
           "required": false,
-          "description": "保存路径（可选）"
+          "description": "保存目录路径（可选，默认保存到 ./download/ 目录）"
         }
       ]
     }
