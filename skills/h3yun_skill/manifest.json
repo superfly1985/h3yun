@@ -1,7 +1,7 @@
 {
   "name": "氚云数据操作",
   "description": "读写氚云 (H3Yun) 平台的业务数据，支持增删改查、附件上传下载",
-  "version": "1.1.2",
+  "version": "1.1.4",
   "author": "Your Company",
   "config_schema": {
     "type": "object",
@@ -60,7 +60,7 @@
           "name": "filter_field",
           "type": "string",
           "required": false,
-          "description": "过滤字段编码（如 F0000002），不是字段标题。可通过先查询一条数据获取字段编码。"
+          "description": "过滤字段名（以查询返回的实际字段名为准，如 F0000002、UserName、Name 等）"
         },
         {
           "name": "filter_value",
@@ -105,7 +105,32 @@
           "name": "data",
           "type": "object",
           "required": true,
-          "description": "业务数据，键为字段编码（如 F0000002），不是字段标题。可通过先查询一条数据获取字段编码。"
+          "description": "业务数据，键为字段名（以查询返回的实际字段名为准，如 F0000002、UserName 等）"
+        },
+        {
+          "name": "is_submit",
+          "type": "boolean",
+          "required": false,
+          "default": true,
+          "description": "是否直接提交。true=提交(默认)，false=仅保存草稿"
+        }
+      ]
+    },
+    {
+      "name": "批量创建业务数据",
+      "description": "批量创建业务数据，每次最多100条，超过会自动分批处理",
+      "parameters": [
+        {
+          "name": "schema_code",
+          "type": "string",
+          "required": true,
+          "description": "表单编码 (SchemaCode)"
+        },
+        {
+          "name": "data_list",
+          "type": "array",
+          "required": true,
+          "description": "业务数据列表，每个元素是一个对象（字段名: 值），如 [{\"F0000002\": \"张三\"}, {\"F0000002\": \"李四\"}]"
         },
         {
           "name": "is_submit",
@@ -136,7 +161,7 @@
           "name": "data",
           "type": "object",
           "required": true,
-          "description": "更新数据，键为字段编码（如 F0000002），只需传需要更新的字段。"
+          "description": "更新数据，键为字段名（以查询返回的实际字段名为准），只需传需要更新的字段"
         }
       ]
     },
@@ -178,7 +203,7 @@
           "name": "field_name",
           "type": "string",
           "required": true,
-          "description": "附件字段的字段编码（如 F0000011），不是字段标题。在表单设计器中可查看。"
+          "description": "附件字段的字段名（以查询返回的实际字段名为准，如 F0000011、Picture 等）"
         },
         {
           "name": "file_path",

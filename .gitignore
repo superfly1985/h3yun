@@ -85,3 +85,13 @@ logs/
 tmp_*.py
 verify_*.py
 test_*.txt
+
+# Test directory (keep essential files)
+test/*/
+test/*.py
+test/*.json
+test/*.txt
+test/*.md
+!test/.gitkeep
+!test/README.md
+!test/h3yun.env.example
