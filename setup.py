@@ -5,7 +5,7 @@
 安装方式:
     1. 直接安装: pip install git+ssh://git@github.com/superfly1985/h3yun.git
     2. 本地安装: pip install -e .
-    3. requirements.txt: git+ssh://git@github.com/superfly1985/h3yun.git@v1.1.2
+    3. requirements.txt: git+ssh://git@github.com/superfly1985/h3yun.git@v1.1.4
 
 OpenClaw Skill:
     直接使用 skills/h3yun_skill/ 文件夹作为 OpenClaw 技能
@@ -20,7 +20,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="h3yun",
-    version="1.1.2",
+    version="1.1.4",
     author="Your Company",
     author_email="",
     description="氚云 (H3Yun) API Python SDK - 内部使用",

@@ -1,3 +1,41 @@
+## v1.1.4（发布日期：2026-04-20）
+
+### 🐛 Bug 修复：添加 SKILL.md 规范
+
+根据用户反馈添加 SKILL.md 文件，符合 OpenClaw AgentSkills 规范。
+
+### 修复内容
+- 🐛 **创建 SKILL.md 文件**（规范要求）
+  - 添加 YAML frontmatter（name + description）
+  - description 包含触发关键词：氚云、H3Yun、业务数据、表单操作、查询表单、创建数据、更新记录、删除数据、上传附件、下载附件
+  - 简洁的指令风格 body，包含配置、字段说明、Actions
+- 🐛 **删除 README.md**（规范要求）
+  - 按规范只保留 SKILL.md，删除面向用户的 README.md
+
+## v1.1.3（发布日期：2026-04-19）
+
+### 🐛 Bug 修复：Skill 返回值结构优化
+
+根据用户反馈优化 Skill 返回值结构，使其更符合使用直觉。
+
+### 修复内容
+- 🐛 **下载附件参数名使用关键字参数**（问题2）
+  - 修复前：`self.client.download_attachment(attachment_id, output_path)` 使用位置参数
+  - 修复后：`self.client.download_attachment(attachment_id, out_dir=output_path)` 使用关键字参数
+- 🐛 **查询单条返回提取后的业务数据**（问题4）
+  - 修复前：返回完整 API 响应 `{"ReturnData": {"BizObject": {...}}}`
+  - 修复后：直接返回 `BizObject` 内容，用户无需再嵌套提取
+- 🐛 **批量查询返回简化结构**（问题4）
+  - 修复前：返回完整 API 响应
+  - 修复后：返回 `{"BizObjectArray": [...], "TotalCount": N}`，更直观
+- 🐛 **创建/更新/删除/上传附件返回简化结构**（问题4）
+  - 统一提取关键字段（BizObjectId、AttachmentId 等），减少嵌套层级
+- 🐛 **文档说明字段命名的三种类型**（问题5）
+  - 修复前：仅说明 F0000002 格式的"字段编码"
+  - 修复后：说明固有字段（ObjectId/Name）、自动字段（F0000002）、自定义字段（UserName）三种类型，强调以实际查询为准
+- 🐛 **skill.py 添加版本常量**（问题6）
+  - 新增 `__version__ = "1.1.3"` 和 `H3YunSkill.VERSION` 类属性
+
 ## v1.1.2（发布日期：2026-04-16）
 
 ### 🐛 Bug 修复：Skill 歧义与不一致

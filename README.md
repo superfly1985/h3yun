@@ -1,10 +1,10 @@
-# 氚云 (H3Yun) Python SDK v1.1.2
+# 氚云 (H3Yun) Python SDK v1.1.4
 
 氚云平台的 Python SDK，提供完整的 API 操作支持。
 
 > **注意：这是内部私有库，请勿上传到 PyPI 或其他公开仓库。**
 >
-> **版本：v1.1.2（修复 Skill 歧义与不一致）**
+> **版本：v1.1.4（添加 SKILL.md 规范）**
 
 ## 功能特性
 
@@ -36,7 +36,7 @@ pip install git+ssh://git@github.com/superfly1985/h3yun.git@v1.0.0
 
 ```txt
 # requirements.txt
-git+ssh://git@github.com/superfly1985/h3yun.git@v1.1.2
+git+ssh://git@github.com/superfly1985/h3yun.git@v1.1.4
 ```
 
 然后执行：
