@@ -69,7 +69,21 @@ your-project/
 
 ## 快速开始
 
-### 1. 配置环境变量
+### 1. 配置凭证（首次使用必读）
+
+凭证（EngineCode / EngineSecret）从氚云后台获取：**系统集成 → 企业开发信息**。**不要**把真实凭证写进任何会提交到 git 的文件。
+
+**方式1：`.env` 文件（推荐）**
+
+```bash
+# 复制模板并填入真实值
+cp .env.example .env
+# 编辑 .env，填入 H3YUN_ENGINE_CODE 和 H3YUN_SECRET
+```
+
+`.env` 已被 `.gitignore` 排除，不会提交。SDK 的 `from_env()` 会自动加载当前工作目录下的 `.env`。
+
+**方式2：系统环境变量**
 
 ```bash
 export H3YUN_ENGINE_CODE="your_engine_code"
@@ -77,6 +91,8 @@ export H3YUN_SECRET="your_secret"
 export H3YUN_BASE_URL="https://www.h3yun.com"  # 可选，默认
 export H3YUN_TIMEOUT="30"  # 可选，默认30秒
 ```
+
+环境变量优先级高于 `.env` 文件。密钥泄露时到氚云后台重置 Secret 即可作废旧密钥。
 
 ### 2. 基础用法
 

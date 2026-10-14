@@ -9,6 +9,32 @@ from typing import Optional
 from .exceptions import H3YunValidationError
 
 
+def _load_dotenv(path: str = ".env") -> None:
+    """
+    加载 .env 文件到环境变量（已存在的环境变量优先，不覆盖）
+
+    Args:
+        path: .env 文件路径，默认当前工作目录下的 .env
+    """
+    if not os.path.exists(path):
+        return
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip()
+            # 去掉成对引号和行内注释
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+                value = value[1:-1]
+            elif " #" in value:
+                value = value.split(" #", 1)[0].strip()
+            if key and key not in os.environ:
+                os.environ[key] = value
+
+
 @dataclass
 class H3YunConfig:
     """
@@ -65,7 +91,7 @@ class H3YunConfig:
     @classmethod
     def from_env(cls, prefix: str = "H3YUN_") -> "H3YunConfig":
         """
-        从环境变量读取配置
+        从环境变量读取配置（自动加载当前工作目录下的 .env 文件，已存在的环境变量优先）
 
         Args:
             prefix: 环境变量前缀，默认 H3YUN_
@@ -77,12 +103,15 @@ class H3YunConfig:
             H3YunValidationError: 配置验证失败
 
         Example:
-            >>> # 设置环境变量
+            >>> # 方式1: 项目根目录放 .env 文件 (参考 .env.example)
+            >>> config = H3YunConfig.from_env()
+            >>> # 方式2: 设置环境变量
             >>> import os
             >>> os.environ["H3YUN_ENGINE_CODE"] = "your_code"
             >>> os.environ["H3YUN_SECRET"] = "your_secret"
             >>> config = H3YunConfig.from_env()
         """
+        _load_dotenv()
         return cls(
             engine_code=os.getenv(f"{prefix}ENGINE_CODE", ""),
             secret=os.getenv(f"{prefix}SECRET", ""),
